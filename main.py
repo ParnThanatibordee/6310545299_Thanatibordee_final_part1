@@ -20,6 +20,9 @@ class SlowFruit(Sprite):
         if self.y > CANVAS_WIDTH + 30:
             self.to_be_deleted = True
 
+        if self.y == CANVAS_HEIGHT:
+            self.y = 0
+
 
 class FastFruit(Sprite):
     def __init__(self, app, x, y):
@@ -34,6 +37,8 @@ class FastFruit(Sprite):
         if self.y > CANVAS_WIDTH + 30:
             self.to_be_deleted = True
 
+        if self.y == CANVAS_HEIGHT:
+            self.y = 0
 
 class SlideFruit(Sprite):
     def __init__(self, app, x, y):
@@ -50,6 +55,13 @@ class SlideFruit(Sprite):
         if self.y > CANVAS_WIDTH + 30:
             self.to_be_deleted = True
 
+        if self.x == 0:
+            self.x = CANVAS_WIDTH
+        elif self.x == CANVAS_WIDTH:
+            self.x = 0
+
+        if self.y == CANVAS_HEIGHT:
+            self.y = 0
 
 class CurvyFruit(Sprite):
     def __init__(self, app, x, y):
@@ -67,6 +79,14 @@ class CurvyFruit(Sprite):
         if self.y > CANVAS_WIDTH + 30:
             self.to_be_deleted = True
 
+        if self.x == 0:
+            self.x = CANVAS_WIDTH
+        elif self.x == CANVAS_WIDTH:
+            self.x = 0
+
+        if self.y == CANVAS_HEIGHT:
+            self.y = 0
+            
 
 class Basket(Sprite):
     def __init__(self, app, x, y):
@@ -76,12 +96,20 @@ class Basket(Sprite):
         self.direction = None
 
     def update(self):
-        if self.direction == BASKET_LEFT:
+        """if self.direction == BASKET_LEFT:
             if self.x >= BASKET_MARGIN:
                 self.x -= BASKET_SPEED
         elif self.direction == BASKET_RIGHT:
             if self.x <= CANVAS_WIDTH - BASKET_MARGIN:
-                self.x += BASKET_SPEED
+                self.x += BASKET_SPEED"""
+        if self.direction == BASKET_LEFT:
+            self.x -= BASKET_SPEED
+        elif self.direction == BASKET_RIGHT:
+            self.x += BASKET_SPEED
+        if self.x == -BASKET_MARGIN:
+            self.x = CANVAS_WIDTH + BASKET_MARGIN
+        elif self.x == CANVAS_WIDTH + BASKET_MARGIN:
+            self.x = BASKET_MARGIN
 
     def check_collision(self, fruit):
         if self.distance_to(fruit) <= BASKET_CATCH_DISTANCE:

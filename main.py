@@ -11,6 +11,7 @@ class SlowFruit(Sprite):
     def __init__(self, app, x, y):
         super().__init__(app, 'images/apple.png', x, y)
 
+        self.reward = 1
         self.app = app
 
     def update(self):
@@ -24,6 +25,7 @@ class FastFruit(Sprite):
     def __init__(self, app, x, y):
         super().__init__(app, 'images/banana.png', x, y)
 
+        self.reward = 2
         self.app = app
 
     def update(self):
@@ -37,6 +39,7 @@ class SlideFruit(Sprite):
     def __init__(self, app, x, y):
         super().__init__(app, 'images/cherry.png', x, y)
 
+        self.reward = 3
         self.app = app
         self.direction = randint(0,1)*2 - 1
 
@@ -52,6 +55,7 @@ class CurvyFruit(Sprite):
     def __init__(self, app, x, y):
         super().__init__(app, 'images/pear.png', x, y)
 
+        self.reward = 4
         self.app = app
         self.t = randint(0,360) * 2 * math.pi / 360
 
@@ -82,7 +86,7 @@ class Basket(Sprite):
     def check_collision(self, fruit):
         if self.distance_to(fruit) <= BASKET_CATCH_DISTANCE:
             fruit.to_be_deleted = True
-            self.app.score += 1
+            self.app.score += fruit.reward
             self.app.update_score()
 
 
@@ -94,6 +98,11 @@ class BasketGame(GameApp):
         self.score = 0
         self.score_text = Text(self, 'Score: 0', 100, 40)
         self.fruits = []
+
+        self.command_map = {
+            'Left': self.next_direction_function(self.basket, BASKET_LEFT),
+            'Right': self.next_direction_function(self.basket, BASKET_RIGHT),
+        }
 
     def update_score(self):
         self.score_text.set_text('Score: ' + str(self.score))
@@ -136,10 +145,22 @@ class BasketGame(GameApp):
         self.fruits = self.update_and_filter_deleted(self.fruits)
 
     def on_key_pressed(self, event):
-        if event.keysym == 'Left':
+        key = event.keysym
+        if key in self.command_map:
+            self.command_map[key]()
+        else:
+            pass
+        """if event.keysym == 'Left':
             self.basket.direction = BASKET_LEFT
         elif event.keysym == 'Right':
-            self.basket.direction = BASKET_RIGHT
+            self.basket.direction = BASKET_RIGHT"""
+
+    def next_direction_function(self, basket, next_direction):
+
+        def f():
+            basket.direction = next_direction
+
+        return f
     
 
 if __name__ == "__main__":
